@@ -25,7 +25,7 @@ public class GameScreen implements Screen {
     QuadTree<CircleShape> circles;
 
     public GameScreen() {
-        
+
         batch = new SpriteBatch();
         renderer = new ShapeRenderer();
 
