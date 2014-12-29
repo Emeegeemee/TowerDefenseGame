@@ -1,11 +1,11 @@
 package org.emeegeemee.td;
 
 import com.badlogic.gdx.Game;
-import org.emeegeemee.td.screen.GameScreen;
+import org.emeegeemee.td.screen.TestScreen;
 
 public class TowerDefense extends Game {
 	@Override
 	public void create () {
-		this.setScreen(new GameScreen());
+		setScreen(new TestScreen());
 	}
 }
