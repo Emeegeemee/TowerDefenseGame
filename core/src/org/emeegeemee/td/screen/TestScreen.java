@@ -2,7 +2,10 @@ package org.emeegeemee.td.screen;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -21,8 +24,14 @@ public class TestScreen extends ScreenAdapter {
     private Stage stage;
     private Skin skin;
 
+    private Texture image = new Texture("badlogic.jpg");
+
+    private SpriteBatch batch;
+
     public TestScreen() {
-        stage = new Stage(new FitViewport(960, 540));
+        batch = new SpriteBatch();
+
+        stage = new Stage(new FitViewport(960, 540), batch);
         Gdx.input.setInputProcessor(stage);
 
         skin = new Skin(Gdx.files.internal("uiskin.json"), new TextureAtlas("uiskin.atlas"));
@@ -52,13 +61,21 @@ public class TestScreen extends ScreenAdapter {
                 button.setText("Good job!");
             }
         });
-
-        //table.add(new Image(skin.))
     }
 
     @Override
     public void render(float delta) {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        Camera camera = stage.getViewport().getCamera();
+        camera.update();
+
+        batch.setProjectionMatrix(camera.combined);
+        //batch.setTransformMatrix(camera.combined);
+
+        batch.begin();
+        batch.draw(image, 0f, 0f);
+        batch.end();
+
         stage.act(delta);
         stage.draw();
     }
@@ -70,6 +87,7 @@ public class TestScreen extends ScreenAdapter {
 
     @Override
     public void dispose() {
+        skin.dispose();
         stage.dispose();
     }
 }
