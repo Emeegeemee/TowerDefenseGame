@@ -10,7 +10,10 @@ public class DesktopLauncher {
 
 		config.width = 960;
 		config.height = 540;
-		//config.resizable = false;
+		config.resizable = false;
+
+
+		//System.setProperty("org.lwjgl.opengl.Window.undecorated", "true");
 
 		new LwjglApplication(new TowerDefense(), config);
 	}
