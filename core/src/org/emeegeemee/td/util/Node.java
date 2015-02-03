@@ -5,12 +5,14 @@ import org.emeegeemee.td.shape.Shape;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Set;
 
 /**
  * Username: Justin
  * Date: 12/27/2014
  */
 public class Node<T extends Shape> extends Strategy<T> {
+    private static final Set EMPTY_SET = Collections.emptySet();
     private final Strategy<T>[] children;
 
     public Node(Strategy<T> parent, int level, Rectangle bounds, Strategy<T>[] children) {
@@ -24,12 +26,8 @@ public class Node<T extends Shape> extends Strategy<T> {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public Collection<T> getObjects() {
-        return Collections.emptySet();
-    }
-
-    @Override
-    public String toString() {
-        return String.format("Node: %s", super.toString());
+        return EMPTY_SET;
     }
 }

@@ -34,9 +34,4 @@ public abstract class Strategy<T extends Shape> {
     public Rectangle getBounds() {
         return bounds;
     }
-
-    @Override
-    public String toString() {
-        return String.format("%d - %s%n", level, bounds.toString());
-    }
 }

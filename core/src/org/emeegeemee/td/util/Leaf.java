@@ -12,7 +12,8 @@ import java.util.Set;
  * Date: 12/27/2014
  */
 public class Leaf<T extends Shape> extends Strategy<T> {
-    private Set<T> objects;
+    private static final Strategy[] EMPTY = new Strategy[0];
+    private final Set<T> objects;
 
     public Leaf(Strategy<T> parent, int level, Rectangle bounds) {
         super(parent, level, bounds);
@@ -22,20 +23,11 @@ public class Leaf<T extends Shape> extends Strategy<T> {
     @Override
     @SuppressWarnings("unchecked")
     public Strategy<T>[] children() {
-        return new Strategy[0];
+        return EMPTY;
     }
 
     @Override
     public Collection<T> getObjects() {
         return objects;
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder builder = new StringBuilder(String.format("Leaf: %s", super.toString()));
-        for(T object : objects) {
-            builder.append(String.format("\t%s%n", object.getBoundingBox()));
-        }
-        return builder.toString();
     }
 }

@@ -2,20 +2,15 @@ package org.emeegeemee.td.util;
 
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
 import org.emeegeemee.td.shape.Shape;
 
-import java.util.ArrayDeque;
-import java.util.Collection;
-import java.util.Deque;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Username: Justin
  * Date: 12/22/2014
  */
-public class QuadTree<T extends Shape> {
+public class QuadTree<T extends Shape> implements Iterable<T> {
     private static final int QUADRANTS = 4;
     private final boolean[] indexHelper = new boolean[QUADRANTS]; //create the boolean array once to save on memory allocation/garbage collection
 
@@ -37,7 +32,7 @@ public class QuadTree<T extends Shape> {
     }
 
     @SuppressWarnings("unchecked")
-    private void split(Strategy<T> leaf, int index) {
+    private void split(Strategy<T> leaf) {
         Strategy<T>[] children = new Strategy[QUADRANTS];
         Strategy<T> node = new Node<>(leaf.parent(), leaf.getLevel(), leaf.getBounds(), children);
 
@@ -59,7 +54,15 @@ public class QuadTree<T extends Shape> {
             strategy = node;
         }
         else {
-            leaf.parent().children()[index] = node;
+            int index = 0;
+            Strategy<T>[] parentChildren = leaf.parent().children();
+            for(; index < parentChildren.length; index++) {
+                if(parentChildren[index] == leaf) {
+                    break;
+                }
+            }
+
+            parentChildren[index] = node;
         }
 
         leaf.getObjects().forEach((T object) -> insert(node, object));
@@ -96,19 +99,18 @@ public class QuadTree<T extends Shape> {
     }
 
     private void insert(Strategy<T> strategy, T object) {
-        Deque<Pair<Integer, Strategy<T>>> stack = new ArrayDeque<>();
-        stack.addFirst(new ImmutablePair<>(-1, strategy));
+        Deque<Strategy<T>> stack = new ArrayDeque<>();
+        stack.addFirst(strategy);
 
         while(!stack.isEmpty()) {
-            Pair<Integer, Strategy<T>> pair = stack.removeFirst();
-            Strategy<T> cur = pair.getRight();
+            Strategy<T> cur = stack.removeFirst();
             Strategy<T>[] children = cur.children();
 
             if(children.length > 0) {//node
                 boolean[] index = getIndex(cur, object);
-                for(int i = 0; i < index.length; i++) {
+                for(int i = children.length - 1; i >= 0; i--) {
                     if(index[i]) {
-                        stack.addFirst(new ImmutablePair<>(i, children[i]));
+                        stack.addFirst(children[i]);
                     }
                 }
             }
@@ -116,7 +118,7 @@ public class QuadTree<T extends Shape> {
                 Collection<T> objects = cur.getObjects();
                 objects.add(object);
                 if(objects.size() > maxObjects && cur.getLevel() < maxLevels) {
-                    split(cur, pair.getLeft());
+                    split(cur);
                 }
             }
         }
@@ -132,7 +134,7 @@ public class QuadTree<T extends Shape> {
 
             if(children.length > 0) {//node
                 boolean[] index = getIndex(cur, object);
-                for(int i = 0; i < children.length; i++) {
+                for(int i = children.length - 1; i >= 0; i--) {
                     if(index[i]) {
                         stack.addFirst(children[i]);
                     }
@@ -155,8 +157,8 @@ public class QuadTree<T extends Shape> {
             Rectangle bounds = cur.getBounds();
             renderer.rect(bounds.x, bounds.y, bounds.width, bounds.height);
 
-            for(Strategy<T> child : children) {
-                stack.addFirst(child);
+            for(int i = children.length - 1; i >= 0; i--) {
+                stack.addFirst(children[i]);
             }
 
             for(T object : cur.getObjects()) {
@@ -171,13 +173,36 @@ public class QuadTree<T extends Shape> {
         StringBuilder builder = new StringBuilder("Quadtree:" + System.lineSeparator());
         Deque<Strategy<T>> stack = new ArrayDeque<>();
         stack.addFirst(strategy);
+
         while(!stack.isEmpty()) {
             Strategy<T> cur = stack.removeFirst();
-            builder.append(cur.toString());
-            for(Strategy<T> child : cur.children()) {
-                stack.addFirst(child);
+
+            builder.append(String.format("%s: %d - %s%n", cur.getClass().getSimpleName(), cur.getLevel(), cur.getBounds()));
+            for(T object : cur.getObjects()) {
+                builder.append(String.format("\t%s%n", object.getBoundingBox()));
+            }
+
+            for(int i = cur.children().length - 1; i >= 0; i--) {
+                stack.addFirst(cur.children()[i]);
             }
         }
         return builder.toString();
+    }
+
+    @Override
+    public Iterator<T> iterator() {
+        Set<T> iterable = new LinkedHashSet<>();
+        Deque<Strategy<T>> stack = new ArrayDeque<>();
+        stack.addFirst(strategy);
+
+        while(!stack.isEmpty()) {
+            Strategy<T> cur = stack.removeFirst();
+            for(int i = cur.children().length - 1; i >= 0; i--) {
+                stack.addFirst(cur.children()[i]);
+            }
+            iterable.addAll(cur.getObjects());
+        }
+
+        return iterable.iterator();
     }
 }
