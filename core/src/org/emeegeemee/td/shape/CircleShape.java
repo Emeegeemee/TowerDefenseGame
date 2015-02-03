@@ -9,10 +9,10 @@ import com.badlogic.gdx.math.Vector2;
  * Date: 12/27/2014
  */
 public class CircleShape implements Shape {
-    private Circle circle;
+    private final Circle circle;
 
     public CircleShape(CircleShape cs) {
-        circle = new Circle(cs.circle);
+        this(new Circle(cs.circle));
     }
 
     public CircleShape(Vector2 position, float radius) {
@@ -20,7 +20,7 @@ public class CircleShape implements Shape {
     }
 
     public CircleShape(float x, float y, float radius) {
-        circle = new Circle(x, y, radius);
+        this(new Circle(x, y, radius));
     }
 
     public CircleShape(Circle c) {

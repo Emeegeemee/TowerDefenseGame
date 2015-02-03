@@ -21,13 +21,17 @@ import java.util.Set;
  * Date: 12/22/2014
  */
 public class GameScreen implements Screen {
-    ShapeRenderer renderer;
-    SpriteBatch batch;
-    Path path;
-    QuadTree<CircleShape> circles;
+    private ShapeRenderer renderer;
+    private SpriteBatch batch;
+    private Path path;
+    private QuadTree<CircleShape> circles;
+
+    private Rectangle window = new Rectangle(0, 0, 0, 0);
+    private Vector2 mousePos = new Vector2();
+    private CircleShape newCircle = new CircleShape(mousePos, 20f);
+    private Set<CircleShape> set = new HashSet<>();
 
     public GameScreen() {
-
         batch = new SpriteBatch();
         renderer = new ShapeRenderer();
 
@@ -39,19 +43,12 @@ public class GameScreen implements Screen {
         }
     }
 
-    private Rectangle window = new Rectangle(0, 0, 0, 0);
-    Vector2 mousePos = new Vector2();
-    float radius = 25f;
-    CircleShape newCircle = new CircleShape(mousePos, 20f);
-    Set<CircleShape> set = new HashSet<>();
-    int numCircles = 0;
-
     @Override
     public void render(float delta) {
         mousePos.set(Gdx.input.getX(), -Gdx.input.getY() + Gdx.graphics.getHeight());
         newCircle.set(mousePos, 20f);
 
-        boolean intersect = path.circleIntersect(mousePos, radius);
+        boolean intersect = path.circleIntersect(mousePos, 25);
 
         if(!intersect) {
             circles.retrieve(set, newCircle);
@@ -71,7 +68,6 @@ public class GameScreen implements Screen {
         }
 
         if(Gdx.input.isTouched() && !intersect) {
-            numCircles++;
             circles.insert(new CircleShape(newCircle));
         }
 
