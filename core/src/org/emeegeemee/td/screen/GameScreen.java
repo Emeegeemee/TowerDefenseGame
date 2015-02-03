@@ -39,6 +39,7 @@ public class GameScreen implements Screen {
         }
     }
 
+    private Rectangle window = new Rectangle(0, 0, 0, 0);
     Vector2 mousePos = new Vector2();
     float radius = 25f;
     CircleShape newCircle = new CircleShape(mousePos, 20f);
@@ -63,6 +64,10 @@ public class GameScreen implements Screen {
             }
 
             set.clear();
+        }
+
+        if(!intersect) {
+            intersect = !window.contains(newCircle.getBoundingBox());
         }
 
         if(Gdx.input.isTouched() && !intersect) {
@@ -103,7 +108,7 @@ public class GameScreen implements Screen {
 
     @Override
     public void resize(int width, int height) {
-
+        window.set(0, 0, width, height);
     }
 
     @Override
