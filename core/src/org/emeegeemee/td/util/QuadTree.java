@@ -55,14 +55,14 @@ public class QuadTree<T extends Shape> {
         children[2] = new Leaf<>(node, level + 1, new Rectangle(x, y + subHeight, subWidth, subHeight));
         children[3] = new Leaf<>(node, level + 1, new Rectangle(x + subWidth, y + subHeight, subWidth, subHeight));
 
-        if(index == -1) {
+        if(node.parent() == null) {
             strategy = node;
         }
         else {
             leaf.parent().children()[index] = node;
         }
 
-        leaf.getObjects().forEach(this::insert);
+        leaf.getObjects().forEach((T object) -> insert(node, object));
     }
 
     private boolean[] getIndex(Strategy<T> strategy, T object) {
@@ -92,6 +92,10 @@ public class QuadTree<T extends Shape> {
     }
 
     public void insert(T object) {
+        insert(strategy, object);
+    }
+
+    private void insert(Strategy<T> strategy, T object) {
         Deque<Pair<Integer, Strategy<T>>> stack = new ArrayDeque<>();
         stack.addFirst(new ImmutablePair<>(-1, strategy));
 
