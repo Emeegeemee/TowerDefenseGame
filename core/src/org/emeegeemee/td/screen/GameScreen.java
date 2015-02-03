@@ -9,10 +9,12 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.utils.ObjectSet;
 import org.emeegeemee.td.path.Path;
 import org.emeegeemee.td.shape.CircleShape;
 import org.emeegeemee.td.util.QuadTree;
+
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Username: Justin
@@ -40,7 +42,7 @@ public class GameScreen implements Screen {
     Vector2 mousePos = new Vector2();
     float radius = 25f;
     CircleShape newCircle = new CircleShape(mousePos, 20f);
-    ObjectSet<CircleShape> set = new ObjectSet<>();
+    Set<CircleShape> set = new HashSet<>();
     int numCircles = 0;
 
     @Override
