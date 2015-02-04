@@ -13,8 +13,12 @@ import java.util.Iterator;
 public class Path implements Iterable<Vector2> {
     private Array<Vector2> points;
 
+    public Path() {
+        points = new Array<>();
+    }
+
     public Path(Array<Vector2> points) {
-        this.points = new Array<>();
+        this();
 
         for(Vector2 v : points) {
             this.points.add(v.cpy());
@@ -23,6 +27,28 @@ public class Path implements Iterable<Vector2> {
 
     public int getNumberOfWaypoints() {
         return points.size;
+    }
+
+    /**
+     * adds a copy of the given point to the path
+     * @param point the new point to be added to the end of the path
+     */
+    public void addWaypoint(Vector2 point) {
+        points.add(point.cpy());
+    }
+
+    /**
+     * adds a copy of the given point to the path
+     * @param point the new point to be added to the path
+     * @param index the index to insert the point to
+     */
+    public void addWaypoint(Vector2 point, int index) {
+        if(index > points.size) {
+            addWaypoint(point);
+        }
+        else {
+            points.insert(index, point.cpy());
+        }
     }
 
     /**
