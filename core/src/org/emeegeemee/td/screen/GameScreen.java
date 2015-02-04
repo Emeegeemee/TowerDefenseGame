@@ -12,7 +12,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import org.emeegeemee.td.path.Path;
 import org.emeegeemee.td.shape.CircleShape;
-import org.emeegeemee.td.util.QuadTree;
+import org.emeegeemee.td.util.quadtree.QuadTree;
 
 import java.util.HashSet;
 import java.util.Set;

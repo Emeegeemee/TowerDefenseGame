@@ -1,4 +1,4 @@
-package org.emeegeemee.td.util;
+package org.emeegeemee.td.util.quadtree;
 
 import com.badlogic.gdx.math.Rectangle;
 import org.emeegeemee.td.shape.Shape;
