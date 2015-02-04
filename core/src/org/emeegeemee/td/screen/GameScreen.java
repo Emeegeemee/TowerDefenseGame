@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
 import org.emeegeemee.td.path.Path;
 import org.emeegeemee.td.shape.CircleShape;
 import org.emeegeemee.td.util.QuadTree;
@@ -35,12 +36,13 @@ public class GameScreen implements Screen {
         batch = new SpriteBatch();
         renderer = new ShapeRenderer();
 
-        path = new Path();
         circles = new QuadTree<>(new Rectangle(0f, 0f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
 
+        Array<Vector2> waypoints = new Array<>();
         for(int i = 0; i < MathUtils.random(5, 10); i++) {
-            path.addWaypoint(new Vector2(MathUtils.random(50f, 910f), MathUtils.random(50f, 490f)));
+            waypoints.add(new Vector2(MathUtils.random(50f, 910f), MathUtils.random(50f, 490f)));
         }
+        path = new Path(waypoints);
     }
 
     @Override
