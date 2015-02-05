@@ -12,17 +12,23 @@ import java.util.Iterator;
  */
 public class Path implements Iterable<Vector2> {
     private Array<Vector2> points;
+    private float width;
 
     public Path() {
-        points = new Array<>();
+        this(new Array<>());
     }
 
     public Path(Array<Vector2> points) {
-        this();
+        this(points, 5f);
+    }
 
+    public Path(Array<Vector2> points, float width) {
+        this.points = new Array<>();
         for(Vector2 v : points) {
             this.points.add(v.cpy());
         }
+
+        this.width = width;
     }
 
     public int getNumberOfWaypoints() {
@@ -89,6 +95,7 @@ public class Path implements Iterable<Vector2> {
      * @return whether the circle intersects the path
      */
     public boolean circleIntersect(Vector2 center, float radius) {
+        radius += width;
         float radiusSq = radius * radius;
 
         if(points.size == 0)
@@ -97,24 +104,15 @@ public class Path implements Iterable<Vector2> {
             return center.dst2(points.first()) < radiusSq;
         }
 
-        for(int index = 0; index < points.size; index++) {
-            Vector2 mid = points.get(index);
-            Vector2 point = new Vector2();
+        Vector2 point = new Vector2();
+        for(int index = 1; index < points.size; index++) {
+            Vector2 begin = points.get(index - 1);
+            Vector2 end = points.get(index);
 
-            if(index < points.size - 1) {
-                Vector2 end = points.get(index + 1);
-                Intersector.nearestSegmentPoint(mid, end, center, point);
+            Intersector.nearestSegmentPoint(begin, end, center, point);
 
-                if(point.dst2(center) < radiusSq)
-                    return true;
-            }
-
-            if(index > 0) {
-                Vector2 begin = points.get(index - 1);
-                Intersector.nearestSegmentPoint(begin, mid, center, point);
-
-                if(point.dst2(center) < radiusSq)
-                    return true;
+            if(point.dst2(center) < radiusSq) {
+                return true;
             }
         }
 

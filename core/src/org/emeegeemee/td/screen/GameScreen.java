@@ -50,7 +50,7 @@ public class GameScreen implements Screen {
         mousePos.set(Gdx.input.getX(), -Gdx.input.getY() + Gdx.graphics.getHeight());
         newCircle.set(mousePos, 20f);
 
-        boolean intersect = path.circleIntersect(mousePos, 25);
+        boolean intersect = path.circleIntersect(mousePos, 20f);
 
         if(!intersect) {
             circles.retrieve(set, newCircle);
